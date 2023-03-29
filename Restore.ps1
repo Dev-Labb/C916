@@ -2,24 +2,24 @@
 
 New-ADOrganizationalUnit -Path "DC=consultingfirm,DC=com" -Name "Finance" -DisplayName "Finance-Dept" -ProtectedFromAccidentalDeletion $false 
 
-$ADUsers = Import-Csv .\financePersonnel.csv -path $PSScriptRoot\financePersonnel.csv
+$ADUsers = Import-Csv -path $PSScriptRoot\financePersonnel.csv
 
-foreach ($ADUser in $NewADUser) {
-    $FirstName = ADUser.First_Name  
-    $LastName = ADUser.Last_Name 
+foreach ($ADUser in $ADUsers) {
+    $FirstName = $ADUser.First_Name  
+    $LastName = $ADUser.Last_Name 
     $FullName = $FirstName + " " + $LastName 
-    $SAM = ADUser.samaccount
-    $Postal = ADUser.PostalCode 
-    $Office = ADUser.OfficePhone
-    $Mobile = ADUser.MobilePhone
+    $SAM = $ADUser.samaccount
+    $Postal = $ADUser.PostalCode 
+    $Office = $ADUser.OfficePhone
+    $Mobile = $ADUser.MobilePhone
+
+
+    New-ADUser  -GivenName $FirstName `
+                -Surname $LastName `
+                -Name $FullName `
+                -SamAccountName $SAM `
+                -DisplayName $FullName `
+                -PostalCode $Postal `
+                -OfficePhone $Office `
+                -MobilePhone $Mobile `
 }
-
-NewUser -GivenName $FirstName `
-        -Surname $LastName `
-        -Name $FullName `
-        -SamAccountName $SAM `
-        -DisplayName $FullName `
-        -PostalCode $Postal `
-        -OfficePhone $Office
-        -MobilePhone $Mobile 
-
