@@ -27,5 +27,6 @@ foreach ($ADUser in $ADUsers) {
                 -PostalCode $Postal `
                 -OfficePhone $Office `
                 -MobilePhone $Mobile `
+                -path $Path 
                 
 }
