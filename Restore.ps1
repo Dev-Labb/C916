@@ -30,3 +30,17 @@ foreach ($ADUser in $ADUsers) {
                 -path $Path 
                 
 }
+
+
+#Checks to see if old outdated sql module is imported alerady and if so removes it. 
+if (Get-Module sqlps) { Remove-Module sqlps }
+
+#Imports current SQL module 
+Get-Module -Name SqlServer
+
+#Sets appropitate variable for referencing a Server and Database instance. 
+$NewDB = New-Object -TypeName Microsoft.SqlServer.Management.Smo.Database -ArgumentList $Server, ClientDB 
+$Server = New-Object -TypeName Microsoft.SqlServer.Management.Smo.Server -ArgumentList ".\SQLEXPRESS"
+
+#creates the the database. 
+$NewDB.Create()
