@@ -8,8 +8,10 @@ $ADUsers = Import-Csv -path $PSScriptRoot\financePersonnel.csv
 $Path = "OU=Finance,DC=consultingfirm,DC=com"
 
 
-
+#Loops through CSV file for each user within
 foreach ($ADUser in $ADUsers) {
+    
+    #Sets variables for each users credentials within the CSV
     $FirstName = $ADUser.First_Name  
     $LastName = $ADUser.Last_Name 
     $FullName = $FirstName + " " + $LastName 
@@ -18,7 +20,7 @@ foreach ($ADUser in $ADUsers) {
     $Office = $ADUser.OfficePhone
     $Mobile = $ADUser.MobilePhone
 
-
+    #Creates users utilizing above variable/credentials and adds them to specified "Path"
     New-ADUser  -GivenName $FirstName `
                 -Surname $LastName `
                 -Name $FullName `
@@ -30,7 +32,6 @@ foreach ($ADUser in $ADUsers) {
                 -path $Path 
                 
 }
-
 
 #Checks to see if old outdated sql module is imported alerady and if so removes it. 
 if (Get-Module sqlps) { Remove-Module sqlps }
@@ -44,3 +45,14 @@ $Server = New-Object -TypeName Microsoft.SqlServer.Management.Smo.Server -Argume
 
 #creates the the database. 
 $NewDB.Create()
+
+#Creates teh table within the Database based on the T-SQL code in our Source folder.
+Invoke-Sqlcmd -ServerInstance $Server -Database $NewDB -InputFile $PSScriptRoot\CREATETABLE_Client_A_Contacts.sql 
+
+#Variable for referencing our created table vs having to type it in every time. 
+$tableName = "Client_A_Contacts" 
+
+$Insert = "INSERT INTO [$($tableName)] (first_name, Last_Name, city, county, zip, officePhone, mobilePhone) "
+
+$NewClients = Import-Csv $PSScriptRoot\NewClientData.csv 
+
