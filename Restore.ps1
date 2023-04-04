@@ -52,7 +52,21 @@ Invoke-Sqlcmd -ServerInstance $Server -Database $NewDB -InputFile $PSScriptRoot\
 #Variable for referencing our created table vs having to type it in every time. 
 $tableName = "Client_A_Contacts" 
 
-$Insert = "INSERT INTO [$($tableName)] (first_name, Last_Name, city, county, zip, officePhone, mobilePhone) "
+#Varible for injecting credentials into "Client_A_Contacts" table. 
+$Insert = "INSERT INTO [$($tableName)] (first_name, last_Name, city, county, zip, officePhone, mobilePhone) "
 
+#Variable to import proper csv for clients.
 $NewClients = Import-Csv $PSScriptRoot\NewClientData.csv 
 
+#Loop that will cycl through each client and add appropiate credentials to correct location inside "Client_A_Contacts" table. 
+foreach($NewClient in $NewClients)
+{
+    $Credentials = "VALUES (`
+                            '$($NewClient.first_name)' , `
+                            '$($NewClient.last_name)' , `
+                            '$($NewClient.city)' , `
+                            '$($NewClient.county)' , `
+                            '$($NewClient.zip)' , `
+                            '$($NewClient.OfficePhone)' , `
+                            '$($NewClient.MobilePhone)' , )"
+}
