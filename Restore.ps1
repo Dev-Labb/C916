@@ -1,5 +1,17 @@
 # Author: Kerry Daniels Student ID: 001548730
 
+<#Synopsis:
+This script is to complete all the tasks assigned in Task 1 of C916 WGU Course.
+
+Description:
+This script automates creation of AD users, OU addition, and SQL queries. It works in conjunction with provided csv files 
+for full creation of these objects.#>
+
+#Try is for error handling. 
+Try 
+{
+
+
 #Creates a new OU called "Fianance"
 New-ADOrganizationalUnit -Path "DC=consultingfirm,DC=com" -Name "Finance" -DisplayName "Finance-Dept" -ProtectedFromAccidentalDeletion $false 
 
@@ -76,4 +88,11 @@ foreach($NewClient in $NewClients)
 $AddClients = $Insert + $Credentials
 Invoke-Sqlcmd -Database $ClientDB -ServerInstance $ClientServer -Query $AddClients 
 
-}
+}}
+
+#Catch runs when memory eror occurs. Tells user the issue and exits the script. 
+Catch [System.OutOfMemoryException]
+{
+        Write-Host -ForegroundColor Red "System Out of Memory. Terminating Script."
+        Exit
+}   
