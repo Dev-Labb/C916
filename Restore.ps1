@@ -55,7 +55,7 @@ $NewDB.Create()
 Invoke-Sqlcmd -ServerInstance $ClientServer -Database $ClientDB -InputFile $PSScriptRoot\Client_A_Contacts.sql 
 
 #Varible for injecting credentials into "Client_A_Contacts" table. 
-$Insert = "INSERT INTO [$($TableName)] (first_name, last_Name, city, county, zip, officePhone, mobilePhone) "
+$Insert = "INSERT INTO [$($TableName)] (first_name, last_name, city, county, zip, officePhone, mobilePhone) "
 
 #Variable to import proper csv for clients.
 $NewClients = Import-Csv $PSScriptRoot\NewClientData.csv 
@@ -63,7 +63,7 @@ $NewClients = Import-Csv $PSScriptRoot\NewClientData.csv
 #Loop that will cycl through each client and add appropiate credentials to correct location inside "Client_A_Contacts" table. 
 foreach($NewClient in $NewClients)
 {
-    $Credentials = "VALUES (`
+    $Credentials = "VALUES ( `
                             '$($NewClient.first_name)' , `
                             '$($NewClient.last_name)' , `
                             '$($NewClient.city)' , `
