@@ -44,7 +44,7 @@ $NewServer = New-Object -TypeName Microsoft.SqlServer.Management.Smo.Server -Arg
 $NewDB = New-Object -TypeName Microsoft.SqlServer.Management.Smo.Database -ArgumentList $NewServer, ClientDB 
 
 #Variable for referencing table, server, and Database. 
-$tableName = "Client_A_Contacts" 
+$TableName = "Client_A_Contacts" 
 $ClientServer = "SRV19-PRIMARY\SQLEXPRESS" 
 $ClientDB = "ClientDB"
 
@@ -55,7 +55,7 @@ $NewDB.Create()
 Invoke-Sqlcmd -ServerInstance $ClientServer -Database $ClientDB -InputFile $PSScriptRoot\Client_A_Contacts.sql 
 
 #Varible for injecting credentials into "Client_A_Contacts" table. 
-$Insert = "INSERT INTO [$($tableName)] (first_name, last_Name, city, county, zip, officePhone, mobilePhone) "
+$Insert = "INSERT INTO [$($TableName)] (first_name, last_Name, city, county, zip, officePhone, mobilePhone) "
 
 #Variable to import proper csv for clients.
 $NewClients = Import-Csv $PSScriptRoot\NewClientData.csv 
@@ -71,4 +71,8 @@ foreach($NewClient in $NewClients)
                             '$($NewClient.zip)' , `
                             '$($NewClient.OfficePhone)' , `
                             '$($NewClient.MobilePhone)' , )"
+
+$AddClients = $Insert + $Credentials
+Invoke-Sqlcmd -Database $ClientDB -ServerInstance $ClientServer -Query $AddClients 
+
 }
