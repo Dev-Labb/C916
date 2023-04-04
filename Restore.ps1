@@ -40,17 +40,19 @@ if (Get-Module sqlps) { Remove-Module sqlps }
 Get-Module -Name SqlServer
 
 #Sets appropitate variable for referencing a Server and Database instance. 
-$NewDB = New-Object -TypeName Microsoft.SqlServer.Management.Smo.Database -ArgumentList $Server, ClientDB 
-$Server = New-Object -TypeName Microsoft.SqlServer.Management.Smo.Server -ArgumentList ".\SQLEXPRESS"
+$NewServer = New-Object -TypeName Microsoft.SqlServer.Management.Smo.Server -ArgumentList ".\SQLEXPRESS"
+$NewDB = New-Object -TypeName Microsoft.SqlServer.Management.Smo.Database -ArgumentList $NewServer, ClientDB 
 
 #creates the the database. 
 $NewDB.Create()
 
 #Creates teh table within the Database based on the T-SQL code in our Source folder.
-Invoke-Sqlcmd -ServerInstance $Server -Database $NewDB -InputFile $PSScriptRoot\CREATETABLE_Client_A_Contacts.sql 
+Invoke-Sqlcmd -ServerInstance   -Database $NewDB -InputFile $PSScriptRoot\CREATETABLE_Client_A_Contacts.sql 
 
 #Variable for referencing our created table vs having to type it in every time. 
 $tableName = "Client_A_Contacts" 
+$ClientServer = "SRV19-PRIMARY\SQLEXPRESS" 
+$ClientDB = "ClientDB"
 
 #Varible for injecting credentials into "Client_A_Contacts" table. 
 $Insert = "INSERT INTO [$($tableName)] (first_name, last_Name, city, county, zip, officePhone, mobilePhone) "
