@@ -47,7 +47,7 @@ $NewDB = New-Object -TypeName Microsoft.SqlServer.Management.Smo.Database -Argum
 $NewDB.Create()
 
 #Creates teh table within the Database based on the T-SQL code in our Source folder.
-Invoke-Sqlcmd -ServerInstance   -Database $NewDB -InputFile $PSScriptRoot\CREATETABLE_Client_A_Contacts.sql 
+Invoke-Sqlcmd -ServerInstance   -Database $NewDB -InputFile $PSScriptRoot\Client_A_Contacts.sql 
 
 #Variable for referencing our created table vs having to type it in every time. 
 $tableName = "Client_A_Contacts" 
