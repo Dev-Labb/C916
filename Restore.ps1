@@ -3,7 +3,7 @@
 #Creates a new OU called "Fianance"
 New-ADOrganizationalUnit -Path "DC=consultingfirm,DC=com" -Name "Finance" -DisplayName "Finance-Dept" -ProtectedFromAccidentalDeletion $false 
 
-#Imports CSV and sets path to correct OU
+#Imports CSV and sets path to correct OU for new users to be added to from CSV. 
 $ADUsers = Import-Csv -path $PSScriptRoot\financePersonnel.csv
 $Path = "OU=Finance,DC=consultingfirm,DC=com"
 
@@ -51,7 +51,7 @@ $ClientDB = "ClientDB"
 #creates the the database. 
 $NewDB.Create()
 
-#Creates teh table within the Database based on the T-SQL code in our Source folder.
+#Creates the table within the Database based on the T-SQL code in our Source folder.
 Invoke-Sqlcmd -ServerInstance $ClientServer -Database $ClientDB -InputFile $PSScriptRoot\Client_A_Contacts.sql 
 
 #Varible for injecting credentials into "Client_A_Contacts" table. 
@@ -69,9 +69,10 @@ foreach($NewClient in $NewClients)
                             '$($NewClient.city)' , `
                             '$($NewClient.county)' , `
                             '$($NewClient.zip)' , `
-                            '$($NewClient.OfficePhone)' , `
-                            '$($NewClient.MobilePhone)' , )"
+                            '$($NewClient.officePhone)' , `
+                            '$($NewClient.mobilePhone)')"
 
+#Following will add variable for the following SQL query and then add new clients to "Client_A_Contacts" table.
 $AddClients = $Insert + $Credentials
 Invoke-Sqlcmd -Database $ClientDB -ServerInstance $ClientServer -Query $AddClients 
 
