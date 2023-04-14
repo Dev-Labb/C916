@@ -49,7 +49,7 @@ foreach ($ADUser in $ADUsers) {
 if (Get-Module sqlps) { Remove-Module sqlps }
 
 #Imports current SQL module 
-Get-Module -Name SqlServer
+Import-Module -Name SqlServer
 
 #Sets appropitate variable for referencing a Server and Database instance. 
 $NewServer = New-Object -TypeName Microsoft.SqlServer.Management.Smo.Server -ArgumentList "SRV19-PRIMARY\SQLEXPRESS"
